@@ -1,0 +1,9 @@
+footer {
+  display: grid;
+  place-content: center;
+  font-size: 0.8rem;
+}
+p span {
+  color: white;
+  margin-left: 0.5rem;
+}

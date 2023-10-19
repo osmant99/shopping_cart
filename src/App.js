@@ -1,24 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import Content from "./Content/Content";
 
 function App() {
+  const [items, setItem] = useState(
+    JSON.parse(localStorage.getItem("shoppingList")) || []
+  );
+  const [newItems, setNewItems] = useState("");
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    JSON.stringify(localStorage.setItem("shoppingList", JSON.stringify(items)));
+  }, [items]);
+  const handleCheck = (id) => {
+    const listChecked = items.map((item) => {
+      return item.id === id ? { ...item, checked: !item.checked } : item;
+    });
+    setItem(listChecked);
+  };
+  const AddNewItems = () => {
+    if (newItems === "") {
+      alert("Please add first");
+    } else {
+      const id = items.length ? items[items.length - 1].id + 1 : 1;
+      const myItems = { id: id, checked: false, name: newItems };
+      setItem([...items, myItems]);
+      setNewItems("");
+    }
+  };
+
+  const handleDelete = (id) => {
+    const filterList = items.filter((item) => {
+      return item.id !== id;
+    });
+    setItem(filterList);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Content
+        handleCheck={handleCheck}
+        handleDelete={handleDelete}
+        items={items.filter((item) => {
+          return item.name.toLowerCase().includes(search.toLowerCase());
+        })}
+        AddNewItems={AddNewItems}
+        newItems={newItems}
+        setNewItems={setNewItems}
+        search={search}
+        setSearch={setSearch}
+      />
+    </>
   );
 }
 
